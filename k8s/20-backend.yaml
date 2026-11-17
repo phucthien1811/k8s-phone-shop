@@ -57,7 +57,7 @@ spec:
       terminationGracePeriodSeconds: 20
       containers:
         - name: backend
-          image: iristhientiy/phone-shop-backend:v1
+          image: thientiy/phone-shop-backend:v1
           ports:
             - containerPort: 3000
           envFrom:
