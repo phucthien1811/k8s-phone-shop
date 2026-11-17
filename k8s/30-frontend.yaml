@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: iristhientiy/phone-shop-frontend:v1
+          image: thientiy/phone-shop-frontend:v1
           ports:
             - containerPort: 80
           resources:
