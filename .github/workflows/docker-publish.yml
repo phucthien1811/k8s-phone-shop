@@ -1,0 +1,43 @@
+# CI/CD: mỗi khi đẩy một tag dạng v1, v2,... lên GitHub,
+# GitHub Actions tự build 2 image và đẩy lên Docker Hub với đúng tag đó.
+# Cần tạo 2 secret trong repo: DOCKERHUB_USERNAME và DOCKERHUB_TOKEN.
+name: Build & Push Docker images
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag của image (ví dụ v1)"
+        required: true
+        default: "v1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xác định phiên bản
+        id: ver
+        run: echo "tag=${{ github.event.inputs.version || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.service }}
+          push: true
+          build-args: APP_VERSION=${{ steps.ver.outputs.tag }}
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/phone-shop-${{ matrix.service }}:${{ steps.ver.outputs.tag }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/phone-shop-${{ matrix.service }}:latest

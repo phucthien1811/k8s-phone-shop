@@ -1,0 +1,15 @@
+{
+  "name": "phone-shop-backend",
+  "version": "1.0.0",
+  "description": "API cho cửa hàng điện thoại chạy trên Kubernetes",
+  "main": "src/server.js",
+  "license": "MIT",
+  "author": "Nguyễn Trần Phúc Thiên",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.11.5"
+  }
+}

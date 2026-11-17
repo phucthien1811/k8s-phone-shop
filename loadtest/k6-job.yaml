@@ -1,0 +1,31 @@
+# Chạy k6 NGAY TRONG CỤM (không phụ thuộc mạng nhà/laptop).
+# Tạo ConfigMap từ file script trước:
+#   kubectl create configmap k6-script -n shop --from-file=flash-sale.js
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: k6-flash-sale
+  namespace: shop
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: k6
+          image: grafana/k6:latest
+          args: ["run", "/scripts/flash-sale.js"]
+          env:
+            - name: BASE_URL
+              value: "http://frontend"
+          resources:
+            requests: { cpu: 200m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          volumeMounts:
+            - name: script
+              mountPath: /scripts
+      volumes:
+        - name: script
+          configMap:
+            name: k6-script

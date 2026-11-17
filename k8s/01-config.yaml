@@ -1,0 +1,23 @@
+# Mật khẩu MySQL lưu trong Secret (không ghi trong code / Deployment)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  namespace: shop
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: "RootPass@2026"
+  MYSQL_PASSWORD: "ShopPass@2026"
+---
+# Cấu hình chung của ứng dụng
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-config
+  namespace: shop
+data:
+  DB_HOST: "mysql"
+  DB_PORT: "3306"
+  DB_NAME: "phoneshop"
+  DB_USER: "shop"
+  FLASH_SALE_MINUTES: "60"
